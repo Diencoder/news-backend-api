@@ -88,6 +88,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadableException(org.springframework.http.converter.HttpMessageNotReadableException ex) {
+        ApiResponse<Object> response = ApiResponse.error(
+            HttpStatus.BAD_REQUEST.value(),
+            "Request body is missing or malformed JSON"
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMethodNotSupportedException(org.springframework.web.HttpRequestMethodNotSupportedException ex) {
+        ApiResponse<Object> response = ApiResponse.error(
+            HttpStatus.METHOD_NOT_ALLOWED.value(),
+            "HTTP Method '" + ex.getMethod() + "' is not supported for this endpoint"
+        );
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<ApiResponse<Object>> handleFileStorageException(FileStorageException ex) {
         ApiResponse<Object> response = ApiResponse.error(
